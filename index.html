@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Business Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .tab-container {
+            margin-bottom: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            background: white;
+            border-radius: 10px;
+            padding: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px 20px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: #666;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .tab-content {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #f8f9ff;
+            border-radius: 12px;
+            border-left: 5px solid #667eea;
+        }
+
+        .form-section h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .form-group input, .form-group select {
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .car-list {
+            margin-top: 30px;
+        }
+
+        .car-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            border-left: 5px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .car-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .car-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .car-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .profit-indicator {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .profit-positive {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .profit-negative {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .cost-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .cost-item {
+            background: #f8f9ff;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .cost-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .cost-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .customer-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: #fff3cd;
+            border-radius: 8px;
+            border-left: 5px solid #ffc107;
+        }
+
+        .customer-list {
+            margin-top: 15px;
+        }
+
+        .customer-item {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .customer-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 10px;
+            align-items: end;
+            margin-bottom: 15px;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cost-breakdown {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .customer-form {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚗 Car Business Manager</h1>
+            <p>Track purchases, costs, and profits for your auction car business</p>
+        </div>
+
+        <div class="tab-container">
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('inventory')">📋 Inventory</button>
+                <button class="tab" onclick="showTab('add-car')">➕ Add Car</button>
+                <button class="tab" onclick="showTab('summary')">📊 Summary</button>
+            </div>
+
+            <!-- Add Car Tab -->
+            <div id="add-car" class="tab-content">
+                <h2>Add New Car</h2>
+                <form id="carForm">
+                    <div class="form-section">
+                        <h3>🚙 Vehicle Details</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="make">Make</label>
+                                <input type="text" id="make" required placeholder="e.g., BMW">
+                            </div>
+                            <div class="form-group">
+                                <label for="model">Model</label>
+                                <input type="text" id="model" required placeholder="e.g., 3 Series">
+                            </div>
+                            <div class="form-group">
+                                <label for="year">Year</label>
+                                <input type="number" id="year" required min="1980" max="2025" placeholder="2020">
+                            </div>
+                            <div class="form-group">
+                                <label for="engine">Engine Size (L)</label>
+                                <input type="number" id="engine" step="0.1" placeholder="2.0">
+                            </div>
+                            <div class="form-group">
+                                <label for="colour">Colour</label>
+                                <input type="text" id="colour" placeholder="Black">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>💰 Costs</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="purchase-price">BCA Purchase Price (£)</label>
+                                <input type="number" id="purchase-price" required step="0.01" placeholder="5000">
+                            </div>
+                            <div class="form-group">
+                                <label for="tow-cost">Tow/Delivery Cost (£)</label>
+                                <input type="number" id="tow-cost" step="0.01" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="service-cost">Service Cost (£)</label>
+                                <input type="number" id="service-cost" step="0.01" placeholder="135" value="135">
+                            </div>
+                            <div class="form-group">
+                                <label for="mot-cost">MOT Cost (£)</label>
+                                <input type="number" id="mot-cost" step="0.01" placeholder="50">
+                            </div>
+                            <div class="form-group">
+                                <label for="cleaning-cost">Cleaning Cost (£)</label>
+                                <input type="number" id="cleaning-cost" step="0.01" placeholder="20" value="20">
+                            </div>
+                            <div class="form-group">
+                                <label for="tax-monthly">Tax (£/month)</label>
+                                <input type="number" id="tax-monthly" step="0.01" placeholder="25" value="25">
+                            </div>
+                            <div class="form-group">
+                                <label for="repairs-cost">Repairs Cost (£)</label>
+                                <input type="number" id="repairs-cost" step="0.01" placeholder="0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>🎯 Pricing</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="market-price">Market Price (£)</label>
+                                <input type="number" id="market-price" step="0.01" placeholder="7000">
+                            </div>
+                            <div class="form-group">
+                                <label for="target-price">Target Selling Price (£)</label>
+                                <input type="number" id="target-price" step="0.01" placeholder="6500">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn">Add Car to Inventory</button>
+                </form>
+            </div>
+
+            <!-- Inventory Tab -->
+            <div id="inventory" class="tab-content active">
+                <h2>Current Inventory</h2>
+                <div id="car-list" class="car-list">
+                    <!-- Cars will be dynamically added here -->
+                </div>
+            </div>
+
+            <!-- Summary Tab -->
+            <div id="summary" class="tab-content">
+                <h2>Business Summary</h2>
+                <div class="summary-stats" id="summary-stats">
+                    <!-- Summary stats will be dynamically added here -->
+                </div>
+                <div id="detailed-summary">
+                    <!-- Detailed breakdown will be shown here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let cars = JSON.parse(localStorage.getItem('carInventory') || '[]');
+        let carCounter = cars.length;
+
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+            
+            if (tabName === 'summary') {
+                updateSummary();
+            }
+        }
+
+        function calculateTotalCost(car) {
+            return parseFloat(car.purchasePrice || 0) + 
+                   parseFloat(car.towCost || 0) + 
+                   parseFloat(car.serviceCost || 0) + 
+                   parseFloat(car.motCost || 0) + 
+                   parseFloat(car.cleaningCost || 0) + 
+                   parseFloat(car.taxMonthly || 0) + 
+                   parseFloat(car.repairsCost || 0);
+        }
+
+        function calculateProfit(car) {
+            const totalCost = calculateTotalCost(car);
+            return parseFloat(car.targetPrice || 0) - totalCost;
+        }
+
+        function addCustomer(carId) {
+            const name = document.getElementById(`customer-name-${carId}`).value;
+            const phone = document.getElementById(`customer-phone-${carId}`).value;
+            const time = document.getElementById(`customer-time-${carId}`).value;
+            
+            if (!name || !phone || !time) {
+                alert('Please fill in all customer details');
+                return;
+            }
+            
+            const car = cars.find(c => c.id === carId);
+            if (!car.customers) car.customers = [];
+            
+            car.customers.push({
+                id: Date.now(),
+                name: name,
+                phone: phone,
+                viewingTime: time
+            });
+            
+            // Clear form
+            document.getElementById(`customer-name-${carId}`).value = '';
+            document.getElementById(`customer-phone-${carId}`).value = '';
+            document.getElementById(`customer-time-${carId}`).value = '';
+            
+            saveData();
+            displayCars();
+        }
+
+        function removeCustomer(carId, customerId) {
+            const car = cars.find(c => c.id === carId);
+            car.customers = car.customers.filter(c => c.id !== customerId);
+            saveData();
+            displayCars();
+        }
+
+        function displayCars() {
+            const carList = document.getElementById('car-list');
+            
+            if (cars.length === 0) {
+                carList.innerHTML = `
+                    <div style="text-align: center; padding: 50px; color: #666;">
+                        <h3>No cars in inventory</h3>
+                        <p>Add your first car using the "Add Car" tab</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            carList.innerHTML = cars.map(car => {
+                const totalCost = calculateTotalCost(car);
+                const profit = calculateProfit(car);
+                const profitClass = profit >= 0 ? 'profit-positive' : 'profit-negative';
+                
+                return `
+                    <div class="car-card">
+                        <div class="car-header">
+                            <div class="car-title">
+                                ${car.year} ${car.make} ${car.model} - ${car.colour}
+                            </div>
+                            <div class="profit-indicator ${profitClass}">
+                                ${profit >= 0 ? '+' : ''}£${profit.toFixed(2)} profit
+                            </div>
+                        </div>
+                        
+                        <div class="cost-breakdown">
+                            <div class="cost-item">
+                                <div class="cost-label">Purchase (BCA)</div>
+                                <div class="cost-value">£${parseFloat(car.purchasePrice || 0).toFixed(2)}</div>
+                            </div>
+                            <div class="cost-item">
+                                <div class="cost-label">Tow/Delivery</div>
+                                <div class="cost-value">£${parseFloat(car.towCost || 0).toFixed(2)}</div>
+                            </div>
+                            <div class="cost-item">
+                                <div class="cost-label">Service</div>
+                                <div class="cost-value">£${parseFloat(car.serviceCost || 0).toFixed(2)}</div>
+                            </div>
+                            <div class="cost-item">
+                                <div class="cost-label">MOT</div>
+                                <div class="cost-value">£${parseFloat(car.motCost || 0).toFixed(2)}</div>
+                            </div>
+                            <div class="cost-item">
+                                <div class="cost-label">Cleaning</div>
+                                <div class="cost-value">£${parseFloat(car.cleaningCost || 0).toFixed(2)}</div>
+                            </div>
+                            <div class="cost-item">
+                                <div class="cost-label">Tax/Month</div>
+                                <div class="cost-value">£${parseFloat(car.taxMonthly || 0).toFixed(2)}</div>
+                            </div>
+                            <div class="cost-item">
+                                <div class="cost-label">Repairs</div>
+                                <div class="cost-value">£${parseFloat(car.repairsCost || 0).toFixed(2)}</div>
+                            </div>
+                            <div class="cost-item">
+                                <div class="cost-label">Total Cost</div>
+                                <div class="cost-value">£${totalCost.toFixed(2)}</div>
+                            </div>
+                            <div class="cost-item">
+                                <div class="cost-label">Target Price</div>
+                                <div class="cost-value">£${parseFloat(car.targetPrice || 0).toFixed(2)}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="customer-section">
+                            <h4>👥 Customer Viewings</h4>
+                            <div class="customer-form">
+                                <input type="text" id="customer-name-${car.id}" placeholder="Customer Name">
+                                <input type="tel" id="customer-phone-${car.id}" placeholder="Phone Number">
+                                <input type="datetime-local" id="customer-time-${car.id}">
+                                <button type="button" class="btn" onclick="addCustomer(${car.id})">Add</button>
+                            </div>
+                            <div class="customer-list">
+                                ${(car.customers || []).map(customer => `
+                                    <div class="customer-item">
+                                        <div>
+                                            <strong>${customer.name}</strong><br>
+                                            📞 ${customer.phone}<br>
+                                            🕒 ${new Date(customer.viewingTime).toLocaleString()}
+                                        </div>
+                                        <button class="delete-btn" onclick="removeCustomer(${car.id}, ${customer.id})">❌</button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 20px;">
+                            <button class="btn btn-secondary" onclick="removeCar(${car.id})">Remove Car</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function removeCar(carId) {
+            if (confirm('Are you sure you want to remove this car from inventory?')) {
+                cars = cars.filter(car => car.id !== carId);
+                saveData();
+                displayCars();
+                updateSummary();
+            }
+        }
+
+        function updateSummary() {
+            const totalCars = cars.length;
+            const totalInvestment = cars.reduce((sum, car) => sum + calculateTotalCost(car), 0);
+            const totalTargetRevenue = cars.reduce((sum, car) => sum + parseFloat(car.targetPrice || 0), 0);
+            const totalProfit = totalTargetRevenue - totalInvestment;
+            
+            document.getElementById('summary-stats').innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-value">${totalCars}</div>
+                    <div class="stat-label">Cars in Inventory</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">£${totalInvestment.toFixed(2)}</div>
+                    <div class="stat-label">Total Investment</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">£${totalTargetRevenue.toFixed(2)}</div>
+                    <div class="stat-label">Target Revenue</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">£${totalProfit.toFixed(2)}</div>
+                    <div class="stat-label">Expected Profit</div>
+                </div>
+            `;
+        }
+
+        function saveData() {
+            localStorage.setItem('carInventory', JSON.stringify(cars));
+        }
+
+        document.getElementById('carForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const car = {
+                id: ++carCounter,
+                make: document.getElementById('make').value,
+                model: document.getElementById('model').value,
+                year: document.getElementById('year').value,
+                engine: document.getElementById('engine').value,
+                colour: document.getElementById('colour').value,
+                purchasePrice: document.getElementById('purchase-price').value,
+                towCost: document.getElementById('tow-cost').value,
+                serviceCost: document.getElementById('service-cost').value,
+                motCost: document.getElementById('mot-cost').value,
+                cleaningCost: document.getElementById('cleaning-cost').value,
+                taxMonthly: document.getElementById('tax-monthly').value,
+                repairsCost: document.getElementById('repairs-cost').value,
+                marketPrice: document.getElementById('market-price').value,
+                targetPrice: document.getElementById('target-price').value,
+                customers: []
+            };
+            
+            cars.push(car);
+            saveData();
+            
+            // Reset form
+            e.target.reset();
+            
+            // Show success message
+            alert('Car added successfully!');
+            
+            // Switch to inventory tab
+            showTab('inventory');
+            displayCars();
+        });
+
+        // Initialize the display
+        displayCars();
+        updateSummary();
+    </script>
+</body>
+</html>
